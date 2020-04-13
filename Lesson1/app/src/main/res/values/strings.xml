@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lesson1</string>
+    <string name="app_name">Lesson2</string>
     <string name="txtCityName">Moskow</string>
     <string name="txtCityTemperature">+10</string>
     <string name="txtCityWind">100</string>
