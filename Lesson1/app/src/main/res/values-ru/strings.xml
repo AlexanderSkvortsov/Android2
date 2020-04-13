@@ -6,4 +6,20 @@
     <string name="txtCelsius">℃</string>
     <string name="txtCityTemperatureName">Температура </string>
     <string name="txtCityWindMane">Ветер</string>
+    <string name="cityNameEnter">Москва</string>
+    <string name="selectCityName">Введите город</string>
+    <string name="btnSelectCity">OK</string>
+    <string name="isPressure">Давление</string>
+    <string name="isWind">Ветер</string>
+    <string name="valuePressure">760</string>
+    <string name="pressureName">Давление</string>
+
+    <string-array name="city_names">
+            <item>Москва</item>
+            <item>Санкт-Петербург</item>
+            <item>Воронеж</item>
+            <item>Ярославль</item>
+            <item>Самара</item>
+     </string-array>
+
 </resources>
