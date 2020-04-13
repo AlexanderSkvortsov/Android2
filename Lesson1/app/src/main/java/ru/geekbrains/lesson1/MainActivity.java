@@ -44,13 +44,17 @@ public class MainActivity extends AppCompatActivity {
 
         boolean value1;
         value1 = intent.getBooleanExtra("PRESSURE_SHOW", true); //if it's a string you stored.
-        newPressure.setVisibility((value1)? View.VISIBLE:View.INVISIBLE);
-        newPressureName.setVisibility((value1)? View.VISIBLE:View.INVISIBLE);
+        showField(value1, newPressure);
+        showField(value1, newPressureName);
 
         value1 = intent.getBooleanExtra("WIND_SHOW",true); //if it's a string you stored.
-        newWind.setVisibility((value1)? View.VISIBLE:View.INVISIBLE);
-        newWindName.setVisibility((value1)? View.VISIBLE:View.INVISIBLE);
+        showField(value1, newWind);
+        showField(value1, newWindName);
 
+    }
+
+    private void showField(boolean value1, TextView newPressure) {
+        newPressure.setVisibility((value1) ? View.VISIBLE : View.INVISIBLE);
     }
 
 }
