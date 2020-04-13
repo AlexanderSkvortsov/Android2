@@ -4,4 +4,6 @@
     <string name="txtCityTemperature">+10</string>
     <string name="txtCityWind">100</string>
     <string name="txtCelsius">℃</string>
+    <string name="txtCityTemperatureName">Температура </string>
+    <string name="txtCityWindMane">Ветер</string>
 </resources>
