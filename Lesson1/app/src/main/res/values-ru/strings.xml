@@ -1,9 +1,25 @@
 <resources>
-    <string name="app_name">Урок 1</string>
+    <string name="app_name">Урок 2</string>
     <string name="txtCityName">Москва</string>
     <string name="txtCityTemperature">+10</string>
     <string name="txtCityWind">100</string>
     <string name="txtCelsius">℃</string>
     <string name="txtCityTemperatureName">Температура </string>
     <string name="txtCityWindMane">Ветер</string>
+    <string name="cityNameEnter">Москва</string>
+    <string name="selectCityName">Введите город</string>
+    <string name="btnSelectCity">OK</string>
+    <string name="isPressure">Давление</string>
+    <string name="isWind">Ветер</string>
+    <string name="valuePressure">760</string>
+    <string name="pressureName">Давление</string>
+
+    <string-array name="city_names">
+            <item>Москва</item>
+            <item>Санкт-Петербург</item>
+            <item>Воронеж</item>
+            <item>Ярославль</item>
+            <item>Самара</item>
+     </string-array>
+
 </resources>
