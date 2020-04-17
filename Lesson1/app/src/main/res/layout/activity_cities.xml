@@ -44,6 +44,7 @@
             android:id="@+id/chkPressure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="20sp"
             android:paddingTop="20sp"
             android:paddingEnd="100sp"
             android:text="@string/isPressure" />
@@ -52,6 +53,7 @@
             android:id="@+id/chkWind"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="20sp"
             android:paddingTop="20sp"
             android:paddingEnd="100sp"
             android:paddingBottom="20sp"
