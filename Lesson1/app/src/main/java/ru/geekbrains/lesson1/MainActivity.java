@@ -3,20 +3,29 @@ package ru.geekbrains.lesson1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import ru.geekbrains.lesson1.CitiesConst;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CitiesConst{
 
-    TextView newCityName;
-    TextView newCityTemperature;
-    TextView newPressure;
-    TextView newPressureName;
-    TextView newWind;
-    TextView newWindName;
+    private TextView newCityName;
+    private TextView newCityTemperature;
+    private TextView newPressure;
+    private TextView newPressureName;
+    private TextView newWind;
+    private TextView newWindName;
+    private FloatingActionButton cityDetails;
+    private FloatingActionButton backToMain;
+    private FloatingActionButton cityWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +44,14 @@ public class MainActivity extends AppCompatActivity {
         newWind = findViewById(R.id.cityWind);;
         newWindName = findViewById(R.id.txtWindName);;
         newCityTemperature = findViewById(R.id.cityTemperature);
+        cityDetails= findViewById(R.id.btnCityDetails);
+        backToMain= findViewById(R.id.btnBackToMain);
+        cityWeather = findViewById(R.id.btnCityWeather);
     }
 
     private void PullView()
     {
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
 
         setTextField(intent, CitiesConst.CITY_FROM_LIST, newCityName);
         setTextField(intent, CitiesConst.CITY_TEMPERATURE, newCityTemperature);
@@ -52,6 +64,39 @@ public class MainActivity extends AppCompatActivity {
         value1 = intent.getBooleanExtra(CitiesConst.WIND_SHOW,true); //if it's a string you stored.
         showField(value1, newWind);
         showField(value1, newWindName);
+
+        cityDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = WIKI_ROOT+newCityName.getText().toString();
+                Uri uri = Uri.parse(url);
+                Intent browser = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(browser);
+            }
+        });
+
+        cityWeather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String query = null;
+                try {
+                    query = URLEncoder.encode(newCityName.getText().toString()+" "+ HOT_WORD, "utf-8");
+                    String url = WEATHER_ROOT + query;
+                    Intent browser = new Intent(Intent.ACTION_VIEW);
+                    browser.setData(Uri.parse(url));
+                    startActivity(browser);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        backToMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 
