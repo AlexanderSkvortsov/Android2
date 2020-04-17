@@ -169,6 +169,6 @@ public class CitiesActivity extends AppCompatActivity {
     private void showToast(String message)
     {
         Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
-        Log.e(GEEK_WEATHER,message);
+        Log.d(GEEK_WEATHER,message);
     }
 }
