@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/weatherView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/weather_main" />
+
+    <TextView
+        android:id="@+id/cityTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtCityTemperature"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cityWind"
+        app:layout_constraintEnd_toStartOf="@+id/txtCelsius"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/txtTemperatureName"
+        app:layout_constraintTop_toBottomOf="@+id/cityName" />
+
+    <TextView
+        android:id="@+id/cityName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtCityName"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cityTemperature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread" />
+
+    <TextView
+        android:id="@+id/txtCelsius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtCelsius"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/cityTemperature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cityTemperature"
+        app:layout_constraintTop_toTopOf="@+id/cityTemperature" />
+
+    <TextView
+        android:id="@+id/txtTemperatureName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="10sp"
+        android:text="@string/txtCityTemperatureName"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/cityTemperature"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cityTemperature" />
+
+    <TextView
+        android:id="@+id/txtWindName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="10sp"
+        android:text="@string/txtCityWindMane"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/cityWind"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cityWind" />
+
+    <TextView
+        android:id="@+id/cityWind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtCityWind"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/cityPressure"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtWindName"
+        app:layout_constraintTop_toBottomOf="@+id/cityTemperature" />
+
+    <TextView
+        android:id="@+id/txtPressureName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="20sp"
+        android:text="@string/pressureName"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/cityPressure"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cityPressure"
+        app:layout_constraintTop_toBottomOf="@+id/cityWind"
+        />
+
+    <TextView
+        android:id="@+id/cityPressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valuePressure"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnCityDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtPressureName"
+        app:layout_constraintTop_toBottomOf="@+id/cityWind" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCityDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:baselineAlignBottom="true"
+        android:clickable="true"
+        app:backgroundTint="@android:color/transparent"
+        app:backgroundTintMode="src_in"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cityPressure"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCityWeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAlignBottom="true"
+        android:clickable="true"
+        android:src="@android:drawable/btn_star"
+        app:backgroundTint="@android:color/transparent"
+        app:layout_constraintEnd_toStartOf="@+id/btnCityDetails"
+        app:layout_constraintTop_toTopOf="@+id/btnCityDetails" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnBackToMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAlignBottom="true"
+        android:clickable="true"
+        app:backgroundTint="@android:color/transparent"
+        app:layout_constraintEnd_toStartOf="@+id/btnCityWeather"
+        app:layout_constraintTop_toTopOf="@+id/btnCityWeather"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

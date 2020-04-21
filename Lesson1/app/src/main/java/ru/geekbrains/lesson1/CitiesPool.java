@@ -1,15 +1,19 @@
 package ru.geekbrains.lesson1;
 
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class CitiesPool {
-    private Map<String,Integer> citiesPool = new HashMap<>();
+public class CitiesPool implements Serializable {
+    private Map<String, ArrayList<Integer>> citiesPool = new HashMap<>();
 
-    private int getTemperature(){
+    private int getTemperature() {
         int min = -40;
         int max = 50;
         int diff = max - min;
@@ -19,26 +23,29 @@ public class CitiesPool {
         return i;
     }
 
-    public CitiesPool(String[] citiesList){
+    private ArrayList<Integer> getTemperatureOfWeek()
+    {
+        ArrayList<Integer> temperatureOfWeek = new ArrayList<>();
+        temperatureOfWeek.clear();
+        for (int i = 0 ;i< 7 ;i++) temperatureOfWeek.add(getTemperature());
+        return temperatureOfWeek;
+    }
 
-        for (String s:citiesList
-             ) {
-            citiesPool.put(s,getTemperature());
+    public CitiesPool(String[] citiesList){
+        for (String s:citiesList) {
+                    citiesPool.put(s,getTemperatureOfWeek());
         }
     }
 
     public int getTemperature(String cityName){
-        int val;
-        try {
-            val = citiesPool.get(cityName);
-            return  val;
-        }
-        catch (NullPointerException e)
+        Calendar calendar = Calendar.getInstance();
+        int weekday = calendar.get(Calendar.DAY_OF_WEEK);
+        if (!checkCity(cityName))
         {
-            val = getTemperature();
-            citiesPool.put(cityName,val);
+            addCity(cityName);
         }
-        return  val;
+
+        return   citiesPool.get(cityName).get(weekday);
     }
 
     public String getCity(int cityIndex){
@@ -47,7 +54,7 @@ public class CitiesPool {
 
     public boolean checkCity(String cityName){
         try {
-            int val = citiesPool.get(cityName);
+            ArrayList<Integer> val = citiesPool.get(cityName);
             return  true;
         }
         catch (NullPointerException e) {
@@ -56,7 +63,7 @@ public class CitiesPool {
     }
 
     public void addCity(String cityName){
-        citiesPool.put(cityName,getTemperature());
+        citiesPool.put(cityName,getTemperatureOfWeek());
     }
 
     public String [] getCities(){
@@ -64,4 +71,24 @@ public class CitiesPool {
         ArrayList<String> listOfKeys = new ArrayList<String>(keySet);
         return listOfKeys.toArray(new String[listOfKeys.size()]);
     }
+
+    public ArrayList<Integer> getTemperatureOfWeek(String cityName)
+    {
+
+        return citiesPool.get(cityName);
+    }
+
+    public int[] getTemperatureOfWeekAsArray(String cityName)
+    {
+        ArrayList<Integer> tempArray = citiesPool.get(cityName);
+        int[] array = new int[tempArray.size()];
+
+        int i = 0;
+        for(Integer value: tempArray) {
+            array[i++] = value;
+        }
+
+        return array;
+    }
+
 }
