@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -103,7 +102,8 @@ public class CityFragment extends Fragment implements CitiesConst {
         weekday = (weekday == 1)?7:weekday-1; // normalize for Russian
 
         int[] cityTemperature = parcelCity.getTemperatureOfWeek();
-        newCityTemperature.setText(String.valueOf(cityTemperature [weekday-1]));
+        int  cTeperature = cityTemperature [weekday-1] %100;
+        newCityTemperature.setText(String.valueOf(cTeperature));
     }
 
     private void btnsInit(View layout) {

@@ -1,6 +1,7 @@
 package ru.geekbrains.lesson1;
 
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -56,21 +57,42 @@ public class CoatOfWeekTemperatureFragment extends Fragment {
         weekTemperatureIDs[5] = R.id.fragSaturdayTemperature;
         weekTemperatureIDs[6] = R.id.fragSundayTemperature;
 
-        TextView cityNameView = layout.findViewById(R.id.fragCityName);
-
+        int [] weekImageIDs = new int[7];
+        weekImageIDs[0] = R.id.fragMondayImage;
+        weekImageIDs[1] = R.id.fragTuesdayImage;
+        weekImageIDs[2] = R.id.fragWednesdayImage;
+        weekImageIDs[3] = R.id.fragThursdayImage;
+        weekImageIDs[4] = R.id.fragFridayImage;
+        weekImageIDs[5] = R.id.fragSaturdayImage;
+        weekImageIDs[6] = R.id.fragSundayImage;
+        
         Parcel parcel = getParcel();
 
+        TextView cityNameView = layout.findViewById(R.id.fragCityName);
+        cityNameView.setText(parcel.getCityName());
+
         int[] weekOfTemperature = parcel.getTemperatureOfWeek();
+        String cels = getActivity().getResources().getString(R.string.txtCelsius);
+
+        TypedArray weatherStateImages = getResources().obtainTypedArray(R.array.weather_state_imgs);
 
         // fill from parcel
-        TextView tempView;
+        TextView tempTextView;
+        ImageView tempImageView;
         for(int i=0;i<7;i++)
         {
-            tempView = layout.findViewById(weekTemperatureIDs[i]);
-            tempView.setText(String.valueOf(weekOfTemperature[i]));
-        }
+            tempTextView = layout.findViewById(weekTemperatureIDs[i]);
+            int j= weekOfTemperature[i]%100;
+            tempTextView.setText(String.valueOf(j)+cels);
+            tempTextView.setTextColor((j<5)? Color.BLUE:(j>25)?Color.RED:Color.GREEN);
 
-        cityNameView.setText(parcel.getCityName());
+            tempImageView = layout.findViewById(weekImageIDs[i]);;
+            int weatherStateIndex = +Math.abs(weekOfTemperature[i]/100);
+            tempImageView.setImageResource(weatherStateImages.getResourceId(weatherStateIndex-1, -1));
+
+        }
+        weatherStateImages.recycle();
+
 
         return layout;
     }

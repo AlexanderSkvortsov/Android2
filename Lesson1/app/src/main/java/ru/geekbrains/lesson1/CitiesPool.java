@@ -13,6 +13,16 @@ import java.util.Set;
 public class CitiesPool implements Serializable {
     private Map<String, ArrayList<Integer>> citiesPool = new HashMap<>();
 
+    private int getWeatherState() {
+        int min = 1;
+        int max = 12;
+        int diff = max - min;
+        Random random = new Random();
+        int i = random.nextInt(diff + 1);
+        i += min;
+        return i;
+    }
+
     private int getTemperature() {
         int min = -40;
         int max = 50;
@@ -20,7 +30,10 @@ public class CitiesPool implements Serializable {
         Random random = new Random();
         int i = random.nextInt(diff + 1);
         i += min;
-        return i;
+
+        if (i<0) return ((getWeatherState()*100)+Math.abs(i))*(-1);
+            else
+                return (getWeatherState()*100)+i;
     }
 
     private ArrayList<Integer> getTemperatureOfWeek()
