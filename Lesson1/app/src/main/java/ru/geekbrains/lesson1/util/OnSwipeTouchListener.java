@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson1;
+package ru.geekbrains.lesson1.util;
 
 import android.content.Context;
 import android.view.GestureDetector;

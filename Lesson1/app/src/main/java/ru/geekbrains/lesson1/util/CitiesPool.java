@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson1;
+package ru.geekbrains.lesson1.util;
 
 import java.io.Serializable;
 import java.time.LocalDate;

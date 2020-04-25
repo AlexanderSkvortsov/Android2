@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,11 +14,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.Serializable;
+import ru.geekbrains.lesson1.util.CitiesConst;
+import ru.geekbrains.lesson1.util.CitiesPool;
+import ru.geekbrains.lesson1.util.ParcelCitylDetails;
 
-import static ru.geekbrains.lesson1.CityFragment.CITY_PARCEL_DETAILS;
+import static ru.geekbrains.lesson1.fragment.CityFragment.CITY_PARCEL_DETAILS;
 
 
 public class CitiesActivity extends AppCompatActivity {
