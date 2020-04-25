@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson1;
+package ru.geekbrains.lesson1.util;
 
 public class ParcelCitylDetails extends Parcel {
     private final boolean showWind;

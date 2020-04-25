@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment android:name="ru.geekbrains.lesson1.CityFragment"
+        <fragment android:name="ru.geekbrains.lesson1.fragment.CityFragment"
             android:id="@+id/cities"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

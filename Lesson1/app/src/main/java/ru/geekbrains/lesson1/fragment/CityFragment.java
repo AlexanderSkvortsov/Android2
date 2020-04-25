@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson1;
+package ru.geekbrains.lesson1.fragment;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -23,7 +23,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
-import static ru.geekbrains.lesson1.CoatOfWeekTemperatureFragment.PARCEL;
+import ru.geekbrains.lesson1.util.CitiesConst;
+import ru.geekbrains.lesson1.util.OnSwipeTouchListener;
+import ru.geekbrains.lesson1.util.Parcel;
+import ru.geekbrains.lesson1.util.ParcelCitylDetails;
+import ru.geekbrains.lesson1.R;
+
+import static ru.geekbrains.lesson1.fragment.CoatOfWeekTemperatureFragment.PARCEL;
 
 // Фрагмент выбора города из списка
 public class CityFragment extends Fragment implements CitiesConst {

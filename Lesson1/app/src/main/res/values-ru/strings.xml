@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Урок 5</string>
+    <string name="app_name">Урок 6</string>
     <string name="txtCityName">Москва</string>
     <string name="txtCityTemperature">+10</string>
     <string name="txtCityWind">100</string>
@@ -30,5 +30,16 @@
     <string name="textFridayName">Пятница</string>
     <string name="textSaturdayName">Суббота</string>
     <string name="textSundayName">Воскресенье</string>
+
+
+    <string-array name="week_Name">
+        <item>Понедельник</item>
+        <item>Вторник</item>
+        <item>Среда</item>
+        <item>Четверг</item>
+        <item> Пятница</item>
+        <item> Суббота</item>
+        <item> Воскресенье</item>
+    </string-array>
 
 </resources>

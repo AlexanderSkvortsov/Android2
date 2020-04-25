@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <!-- Детали по городу  -->
-    <fragment android:name="ru.geekbrains.lesson1.CityFragment"
+    <fragment android:name="ru.geekbrains.lesson1.fragment.CityFragment"
         android:id="@+id/cities"
         android:layout_weight="1"
         android:layout_width="0px"

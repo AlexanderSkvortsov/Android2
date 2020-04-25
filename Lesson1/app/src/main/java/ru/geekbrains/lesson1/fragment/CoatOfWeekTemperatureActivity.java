@@ -1,9 +1,12 @@
-package ru.geekbrains.lesson1;
+package ru.geekbrains.lesson1.fragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+
+import ru.geekbrains.lesson1.R;
+import ru.geekbrains.lesson1.fragment.CoatOfWeekTemperatureFragment;
 
 public class CoatOfWeekTemperatureActivity extends AppCompatActivity {
 

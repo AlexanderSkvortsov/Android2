@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson1;
+package ru.geekbrains.lesson1.util;
 
 public interface CitiesConst {
     String CITY_FROM_LIST = "CITY_FROM_LIST";
