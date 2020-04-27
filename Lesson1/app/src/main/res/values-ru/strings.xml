@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Урок 4</string>
+    <string name="app_name">Урок 5</string>
     <string name="txtCityName">Москва</string>
     <string name="txtCityTemperature">+10</string>
     <string name="txtCityWind">100</string>
@@ -14,6 +14,7 @@
     <string name="valuePressure">760</string>
     <string name="pressureName">Давление</string>
 
+
     <string-array name="city_names">
             <item>Москва</item>
             <item>Санкт-Петербург</item>
@@ -21,5 +22,13 @@
             <item>Ярославль</item>
             <item>Самара</item>
      </string-array>
+
+    <string name="textMondayName">Понедельник</string>
+    <string name="textTuesdayName">Вторник</string>
+    <string name="textWednesdayName">Среда</string>
+    <string name="textThursdayName">Четверг</string>
+    <string name="textFridayName">Пятница</string>
+    <string name="textSaturdayName">Суббота</string>
+    <string name="textSundayName">Воскресенье</string>
 
 </resources>

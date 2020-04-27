@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,10 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.Serializable;
+
+import static ru.geekbrains.lesson1.CityFragment.CITY_PARCEL_DETAILS;
 
 
 public class CitiesActivity extends AppCompatActivity {
@@ -98,10 +103,12 @@ public class CitiesActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(CitiesConst.CITY_FROM_LIST, CityName);
-        intent.putExtra(CitiesConst.PRESSURE_SHOW, swPressure.isChecked());
-        intent.putExtra(CitiesConst.WIND_SHOW, swWind.isChecked());
-        intent.putExtra(CitiesConst.CITY_TEMPERATURE, ((Integer)citiesPool.getTemperature(CityName)).toString());
+        ParcelCitylDetails parcelCitylDetails = new ParcelCitylDetails(CityName,
+                                                                       citiesPool.getTemperatureOfWeekAsArray(CityName),
+                                                                       swWind.isChecked(),
+                                                                       swPressure.isChecked());
+
+        intent.putExtra(CITY_PARCEL_DETAILS,parcelCitylDetails);
         selected_City = CityName;
 
         startActivity(intent);
