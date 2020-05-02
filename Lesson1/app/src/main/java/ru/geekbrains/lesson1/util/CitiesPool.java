@@ -68,7 +68,7 @@ public class CitiesPool implements Serializable {
     public boolean checkCity(String cityName){
         try {
             ArrayList<Integer> val = citiesPool.get(cityName);
-            return  true;
+            return  val!=null;
         }
         catch (NullPointerException e) {
             return false;
@@ -94,6 +94,13 @@ public class CitiesPool implements Serializable {
     public int[] getTemperatureOfWeekAsArray(String cityName)
     {
         ArrayList<Integer> tempArray = citiesPool.get(cityName);
+
+        if (tempArray == null)
+        {
+            addCity(cityName);
+            tempArray = citiesPool.get(cityName);
+        }
+
         int[] array = new int[tempArray.size()];
 
         int i = 0;

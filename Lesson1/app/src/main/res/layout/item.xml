@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:padding="16dp"
-        app:cardBackgroundColor="@color/design_default_color_background"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp"
         app:contentPadding="10dp">

@@ -149,15 +149,4 @@
         app:layout_constraintEnd_toStartOf="@+id/btnCityDetails"
         app:layout_constraintTop_toTopOf="@+id/btnCityDetails" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnBackToMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:baselineAlignBottom="true"
-        android:clickable="true"
-        app:backgroundTint="@android:color/transparent"
-        app:layout_constraintEnd_toStartOf="@+id/btnCityWeather"
-        app:layout_constraintTop_toTopOf="@+id/btnCityWeather"
-        app:srcCompat="@android:drawable/ic_delete" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

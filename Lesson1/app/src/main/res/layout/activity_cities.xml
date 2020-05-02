@@ -4,34 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CitiesActivity"
-    android:orientation="vertical" >
+    android:divider="@drawable/separator"
+    android:orientation="vertical"
+    android:showDividers="middle|beginning|end"
+    tools:context=".CitiesActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:fadingEdge="none"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/city_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/selectCityName" />
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="@string/cityNameEnter" />
+            app:errorEnabled="true">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputCityName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/inputMessage" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/selectCityButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="right"
+            android:layout_weight="0"
             android:text="@string/btnSelectCity" />
     </LinearLayout>
 
@@ -62,11 +64,9 @@
 
     <ListView
         android:id="@+id/city_list"
-        android:entries="@array/city_names"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-     />
-
+        android:entries="@array/city_names" />
 
 
 </LinearLayout>
