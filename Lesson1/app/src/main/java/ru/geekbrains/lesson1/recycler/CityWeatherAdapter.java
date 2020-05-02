@@ -1,6 +1,5 @@
 package ru.geekbrains.lesson1.recycler;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     public void onBindViewHolder(@NonNull CityWeatherAdapter.ViewHolder viewHolder, int position) {
         // Получить элемент из источника данных (БД, интернет...)
         // Вывести на экран используя ViewHolder
-        Soc soc = dataSource.getSoc(position);
+        Wed soc = dataSource.getSoc(position);
         viewHolder.setData(soc.getDescription(), soc.getPicture(), soc.getTemperature());
     }
 

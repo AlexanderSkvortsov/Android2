@@ -18,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
+import ru.geekbrains.lesson1.MainActivity;
 import ru.geekbrains.lesson1.util.CitiesConst;
 import ru.geekbrains.lesson1.util.OnSwipeTouchListener;
 import ru.geekbrains.lesson1.util.Parcel;
@@ -35,7 +37,7 @@ import static ru.geekbrains.lesson1.fragment.CoatOfWeekTemperatureFragment.PARCE
 public class CityFragment extends Fragment implements CitiesConst {
 
     private boolean isExistCoatOfArms;  // Можно ли расположить рядом фрагмент с температурой
-    public static final String CITY_PARCEL_DETAILS = "city_parcel_details";
+
 
     //+ Меняем текущую позицию на объект Parcel
     private Parcel currentParcel;       // Текущая посылка (номер города и название)
@@ -47,7 +49,7 @@ public class CityFragment extends Fragment implements CitiesConst {
     private TextView newWind;
     private TextView newWindName;
     private FloatingActionButton cityDetails;
-    private FloatingActionButton backToMain;
+
     private FloatingActionButton cityWeather;
     private ParcelCitylDetails parcelCity;
     private ImageView backGround;
@@ -73,7 +75,6 @@ public class CityFragment extends Fragment implements CitiesConst {
         newWindName = layout.findViewById(R.id.txtWindName);;
         newCityTemperature = layout.findViewById(R.id.cityTemperature);
         cityDetails= layout.findViewById(R.id.btnCityDetails);
-        backToMain= layout.findViewById(R.id.btnBackToMain);
         cityWeather = layout.findViewById(R.id.btnCityWeather);
         backGround  = layout.findViewById(R.id.weatherView);
     }
@@ -85,8 +86,8 @@ public class CityFragment extends Fragment implements CitiesConst {
     }
 
     public ParcelCitylDetails getParcelCity() {
-    //    return (ParcelCitylDetails) getArguments().getSerializable(CITY_PARCEL_DETAILS);
-        return (ParcelCitylDetails) getActivity().getIntent().getExtras().getSerializable(CITY_PARCEL_DETAILS);
+       // return (ParcelCitylDetails) getActivity().getIntent().getExtras().getSerializable(CITY_PARCEL_DETAILS);
+        return ((MainActivity) getActivity()).mainParcel;
     }
 
     private void fieldsInit(View layout) {
@@ -112,7 +113,12 @@ public class CityFragment extends Fragment implements CitiesConst {
         newCityTemperature.setText(String.valueOf(cTeperature));
     }
 
-    private void btnsInit(View layout) {
+    private void snackbarShow(View view, String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    private void btnsInit(final View layout) {
         cityDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,6 +126,8 @@ public class CityFragment extends Fragment implements CitiesConst {
                 Uri uri = Uri.parse(url);
                 Intent browser = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(browser);
+
+                snackbarShow(layout,"CITY WIKI");
             }
         });
 
@@ -133,19 +141,13 @@ public class CityFragment extends Fragment implements CitiesConst {
                     Intent browser = new Intent(Intent.ACTION_VIEW);
                     browser.setData(Uri.parse(url));
                     startActivity(browser);
+                    snackbarShow(layout,"CITY WEATHER");
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-        backToMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finish();
-            }
-        });
-
 
         final String cityFinal = parcelCity.getCityName();
         final int[] tempArray = parcelCity.getTemperatureOfWeek();
@@ -209,6 +211,11 @@ public class CityFragment extends Fragment implements CitiesConst {
         //+ Также меняем текущую позицию на Parcel
         outState.putSerializable("CurrentCity", currentParcel);
         super.onSaveInstanceState(outState);
+    }
+
+    public int getDummy(){
+
+        return  -1001;
     }
 
     // Показать герб. Ecли возможно, то показать рядом со списком,

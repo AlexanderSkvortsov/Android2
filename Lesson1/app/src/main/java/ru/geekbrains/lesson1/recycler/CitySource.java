@@ -11,7 +11,7 @@ import ru.geekbrains.lesson1.R;
 
 public class CitySource implements CityDataSource {
 
-        private final List<Soc> dataSource;   // создаем этот источник данных
+        private final List<Wed> dataSource;   // создаем этот источник данных
         private final Resources resources;    // ресурсы приложения
         private final Parcel parcel;          // данные оз настроек
 
@@ -31,7 +31,7 @@ public class CitySource implements CityDataSource {
 
             // наполнение источника данных на 1 неделю
             for (int i = 0; i < descriptions.length; i++)
-                dataSource.add(new Soc(descriptions[i], pictures[ getWeatherPictureIndex(i)-1], getTemperature(i)));
+                dataSource.add(new Wed(descriptions[i], pictures[ getWeatherPictureIndex(i)-1], getTemperature(i)));
             return this;
         }
 
@@ -48,7 +48,7 @@ public class CitySource implements CityDataSource {
         }
 
         //
-        public Soc getSoc(int position) {
+        public Wed getSoc(int position) {
             return dataSource.get(position);
         }
 
