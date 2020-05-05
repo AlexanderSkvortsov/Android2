@@ -7,14 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import ru.geekbrains.lesson1.CitiesConst;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView newCityName;
+    TextView newCityTemperature;
     TextView newPressure;
     TextView newPressureName;
     TextView newWind;
     TextView newWindName;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,25 +34,33 @@ public class MainActivity extends AppCompatActivity {
         newPressureName = findViewById(R.id.txtPressureName);;
         newWind = findViewById(R.id.cityWind);;
         newWindName = findViewById(R.id.txtWindName);;
+        newCityTemperature = findViewById(R.id.cityTemperature);
     }
 
     private void PullView()
     {
         Intent intent = getIntent();
-        String value = intent.getStringExtra("CITY_FROM_LIST"); //if it's a string you stored.
-        if (value != null){
-            newCityName.setText(value);
-        }
+
+        setTextField(intent, CitiesConst.CITY_FROM_LIST, newCityName);
+        setTextField(intent, CitiesConst.CITY_TEMPERATURE, newCityTemperature);
 
         boolean value1;
-        value1 = intent.getBooleanExtra("PRESSURE_SHOW", true); //if it's a string you stored.
+        value1 = intent.getBooleanExtra(CitiesConst.PRESSURE_SHOW, true); //if it's a string you stored.
         showField(value1, newPressure);
         showField(value1, newPressureName);
 
-        value1 = intent.getBooleanExtra("WIND_SHOW",true); //if it's a string you stored.
+        value1 = intent.getBooleanExtra(CitiesConst.WIND_SHOW,true); //if it's a string you stored.
         showField(value1, newWind);
         showField(value1, newWindName);
 
+    }
+
+    private void setTextField(Intent intent, String cityFromList, TextView newCityValue) {
+        String value;
+        value = intent.getStringExtra(cityFromList); //if it's a string you stored.
+        if (value != null) {
+            newCityValue.setText(value);
+        }
     }
 
     private void showField(boolean value1, TextView newPressure) {

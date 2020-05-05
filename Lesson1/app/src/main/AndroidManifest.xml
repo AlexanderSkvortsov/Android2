@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".CityesActivity">
+        <activity android:name=".CitiesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
