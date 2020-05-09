@@ -1,20 +1,18 @@
 package ru.geekbrains.lesson1;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import ru.geekbrains.lesson1.fragment.CityFragment;
-import ru.geekbrains.lesson1.fragment.CoatOfWeekTemperatureFragment;
-import ru.geekbrains.lesson1.util.App;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import ru.geekbrains.lesson1.net.WeatherRequest5Days;
+import ru.geekbrains.lesson1.net.WeatherThread;
 import ru.geekbrains.lesson1.util.CitiesConst;
 import ru.geekbrains.lesson1.util.CitiesPool;
 import ru.geekbrains.lesson1.util.ParcelCitylDetails;
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
         private boolean isPressure;
         private String mainCity;
         SingleCitiesPresenter singleCitiesPresenter;
+        WeatherThread weatherThread ;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +37,22 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
 
             SingleCitiesPresenter singleCitiesPresenter  = SingleCitiesPresenter.getInstance();
 
+            InitParcelCity();
+
+            getActualWeb(mainCity);
+
             // restore or create
             if (savedInstanceState == null) {
                 InitPool();
             }
             else {
                 citiesPool=(CitiesPool )savedInstanceState.getSerializable("CityPool");
+
             }
 
+
             mainParcel = createParcelCity();
+
 
             if (savedInstanceState == null) {
                 singleCitiesPresenter.setDarkTheme(isDark);
@@ -60,27 +66,67 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
                 setTheme(R.style.AppTheme);
             }
 
-            setContentView(R.layout.activity_main);
 
+            setContentView(R.layout.activity_main);
+        }
+
+        private boolean getActualWeb(String cityIs ){
+            weatherThread = new WeatherThread(cityIs);
+            Thread childWeatherThread = new Thread(weatherThread);
+            childWeatherThread.start();
+            Log.e(GEEK_WEATHER, "Thread start");
+            try {
+                Thread.sleep(1000);
+                childWeatherThread.join();
+                Log.e(GEEK_WEATHER, "Thread join");
+
+                return  weatherThread.getRequestResult() != null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
 
         }
 
-    public ParcelCitylDetails createParcelCity() {
 
-        SharedPreferences sharedPref = getSharedPreferences(GEEK_WEATHER, MODE_PRIVATE);
+    private void InitParcelCity() {
 
-        isDark= sharedPref.getBoolean(IS_DARK_THEME, true);
-        isWind= sharedPref.getBoolean(IS_WIND, true);
-        isPressure= sharedPref.getBoolean(IS_PRESSUE, true);
-        mainCity= sharedPref.getString(MAIN_CITY, citiesPool.getCity(0));
+            SharedPreferences sharedPref = getSharedPreferences(GEEK_WEATHER, MODE_PRIVATE);
 
-        return new ParcelCitylDetails(mainCity, citiesPool.getTemperatureOfWeekAsArray(mainCity), isWind, isPressure,isDark);
+            isDark= sharedPref.getBoolean(IS_DARK_THEME, true);
+            isWind= sharedPref.getBoolean(IS_WIND, true);
+            isPressure= sharedPref.getBoolean(IS_PRESSUE, true);
+            mainCity= sharedPref.getString(MAIN_CITY, "Москва");
+
+        }
+
+    private  ParcelCitylDetails createParcelCity() {
+
+
+
+        return new ParcelCitylDetails(mainCity, citiesPool.getWeather5DaysDetails(mainCity), isWind, isPressure,isDark);
     }
 
     private void InitPool() {
 
         if (citiesPool == null) {
-            citiesPool = new CitiesPool(getResources().getStringArray(R.array.city_names));
+
+            if (weatherThread.getRequestResult() == null) {
+                Toast.makeText(getApplicationContext(), "Нет данных!", Toast.LENGTH_SHORT).show();
+                Log.e(GEEK_WEATHER,"No data wrom web!");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                finish();
+            }
+            else
+            {
+                // get the weather from web
+                WeatherRequest5Days weatherRequest5Days =  weatherThread.getRequestResult();
+                citiesPool = new CitiesPool(mainCity, weatherRequest5Days );
+            }
         }
     }
 
@@ -159,11 +205,14 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
             isWind = updateWind;
             isPressure = updatePressure;
 
-            if (citiesPool.checkCity(mainCity )){
-                citiesPool.addCity(mainCity);
+            if (!citiesPool.checkCity(mainCity )){
+//                if (getActualWeb(mainCity )){
+                    citiesPool.addCity(mainCity,weatherThread.getRequestResult());
+                    saveParcelCity();
+                    this.recreate();
+
             }
 
-            this.recreate();
 
             //CityFragment cityFragment = (CityFragment) getSupportFragmentManager().findFragmentById(R.id.cities);
             //cityFragment.getActivity().recreate();

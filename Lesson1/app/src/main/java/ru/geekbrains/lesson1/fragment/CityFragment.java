@@ -22,9 +22,11 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import ru.geekbrains.lesson1.MainActivity;
+import ru.geekbrains.lesson1.net.WeatherWebDetails;
 import ru.geekbrains.lesson1.util.CitiesConst;
 import ru.geekbrains.lesson1.util.OnSwipeTouchListener;
 import ru.geekbrains.lesson1.util.Parcel;
@@ -34,6 +36,7 @@ import ru.geekbrains.lesson1.R;
 import static ru.geekbrains.lesson1.fragment.CoatOfWeekTemperatureFragment.PARCEL;
 
 // Фрагмент выбора города из списка
+
 public class CityFragment extends Fragment implements CitiesConst {
 
     private boolean isExistCoatOfArms;  // Можно ли расположить рядом фрагмент с температурой
@@ -102,15 +105,13 @@ public class CityFragment extends Fragment implements CitiesConst {
         newWind.setVisibility((val) ? View.VISIBLE : View.INVISIBLE);
         newWindName.setVisibility((val) ? View.VISIBLE : View.INVISIBLE);
 
+        int cityWind = parcelCity.getWindOf1Day();
+        newWind.setText(String.valueOf(cityWind ));
+
         newCityName.setText(parcelCity.getCityName());
 
-        Calendar calendar = Calendar.getInstance();
-        int weekday = calendar.get(Calendar.DAY_OF_WEEK); // 1 is Sunday
-        weekday = (weekday == 1)?7:weekday-1; // normalize for Russian
-
-        int[] cityTemperature = parcelCity.getTemperatureOfWeek();
-        int  cTeperature = cityTemperature [weekday-1] %100;
-        newCityTemperature.setText(String.valueOf(cTeperature));
+        int cityTemperature = parcelCity.getTemperatureOf1Day();
+        newCityTemperature.setText(String.valueOf(cityTemperature));
     }
 
     private void snackbarShow(View view, String message) {
@@ -150,7 +151,7 @@ public class CityFragment extends Fragment implements CitiesConst {
         });
 
         final String cityFinal = parcelCity.getCityName();
-        final int[] tempArray = parcelCity.getTemperatureOfWeek();
+        final ArrayList<WeatherWebDetails> tempArray = parcelCity.getTemperatureOf5Days();
 
         newCityName .setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +188,7 @@ public class CityFragment extends Fragment implements CitiesConst {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Определение, можно ли будет расположить рядом герб в другом фрагменте
+        // Определение, можно ли будет расположить рядом температуру в другом фрагменте
         isExistCoatOfArms = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
 
@@ -197,10 +198,10 @@ public class CityFragment extends Fragment implements CitiesConst {
         }
         else {
             //+ Если воcстановить не удалось, то сделаем объект с первым индексом
-            currentParcel = new Parcel(parcelCity.getCityName(), parcelCity.getTemperatureOfWeek());
+            currentParcel = new Parcel(parcelCity.getCityName(), parcelCity.getTemperatureOf5Days());
         }
 
-        // Если можно нарисовать рядом герб, то сделаем это
+        // Если можно нарисовать рядом температуру, то сделаем это
         if (isExistCoatOfArms)
             showCoatOfWeekTemperature(currentParcel);
     }
@@ -218,18 +219,18 @@ public class CityFragment extends Fragment implements CitiesConst {
         return  -1001;
     }
 
-    // Показать герб. Ecли возможно, то показать рядом со списком,
+    // Показать температуру. Ecли возможно, то показать рядом со списком,
     // если нет, то открыть вторую activity
     private void showCoatOfWeekTemperature(Parcel parcel) {
         if (isExistCoatOfArms) {
-            // Проверим, что фрагмент с гербом существует в activity
+            // Проверим, что фрагмент с температурой существует в activity
             CoatOfWeekTemperatureFragment detail = (CoatOfWeekTemperatureFragment)
             getFragmentManager().findFragmentById(R.id.coat_of_week_temperature);
-            // Если есть необходимость, то выведем герб
+            // Если есть необходимость, то выведем температуру
             //+ Здесь также применяем Parcel
 
             if (detail == null || detail.getParcel().getCityName() != parcel.getCityName()) {
-                // Создаем новый фрагмент с текущей позицией для вывода герба
+                // Создаем новый фрагмент с текущей позицией для вывода температуры
                 detail = CoatOfWeekTemperatureFragment.create(parcel);
 
                 // Выполняем транзакцию по замене фрагмента

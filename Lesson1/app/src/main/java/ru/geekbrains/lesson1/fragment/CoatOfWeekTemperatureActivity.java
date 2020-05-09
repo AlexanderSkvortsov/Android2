@@ -37,7 +37,7 @@ public class CoatOfWeekTemperatureActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            // Если эта activity запускается первый раз (с каждым новым гербом первый раз)
+            // Если эта activity запускается первый раз (с каждым новой температурой первый раз)
             // то перенаправим параметр фрагменту
             CoatOfWeekTemperatureFragment details = new CoatOfWeekTemperatureFragment();
             details.setArguments(getIntent().getExtras());

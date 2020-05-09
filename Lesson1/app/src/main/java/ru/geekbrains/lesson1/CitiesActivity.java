@@ -43,7 +43,7 @@ public class CitiesActivity extends AppCompatActivity implements CitiesConst{
     Switch swPressure;
     Switch swWind;
 
-    private String selected_City = "Moskow";
+    private String selected_City = "Moscow";
     private CitiesPool citiesPool = null;
     private SingleCitiesPresenter singleCitiesPresenter;
 
@@ -103,6 +103,7 @@ public class CitiesActivity extends AppCompatActivity implements CitiesConst{
 
     private void InitTextView()
     {
+        checkLoginRU=  isLocaleRU()?Pattern.compile("^[а-яА-яЁё]+(?:[\\s-][а-яА-яЁё]+)*$"): Pattern.compile("^[a-zA-Z]+(?:[\\s-][a-zA-Z]+)*$");;
 
         selectedCity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             // Как только фокус потерян, сразу проверяем на валидность данные
@@ -111,7 +112,6 @@ public class CitiesActivity extends AppCompatActivity implements CitiesConst{
                 if (hasFocus) return;
                 TextView tv = (TextView) v;
                 // Это сама валидация, она вынесена в отдельный метод, чтобы не дублировать код см вызов ниже
-                checkLoginRU=  isLocaleRU()?Pattern.compile("^[а-яА-яЁё]+(?:[\\s-][а-яА-яЁё]+)*$"): Pattern.compile("^[a-zA-Z]+(?:[\\s-][a-zA-Z]+)*$");;
                 validate(tv, checkLoginRU , "Это не город!");
             }
         });
@@ -232,7 +232,6 @@ public class CitiesActivity extends AppCompatActivity implements CitiesConst{
 
     private boolean cityNameValidatior(){
         // Это сама валидация, она вынесена в отдельный метод, чтобы не дублировать код см вызов ниже
-        checkLoginRU=  isLocaleRU()?Pattern.compile("^[А-Я][а-я]{2,}$"): Pattern.compile("^[A-Z][a-z]{2,}$");;
         return validate(selectedCity, checkLoginRU, "Это не город!");
     }
 

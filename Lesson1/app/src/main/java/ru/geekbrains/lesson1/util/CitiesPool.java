@@ -10,8 +10,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import ru.geekbrains.lesson1.net.City;
+import ru.geekbrains.lesson1.net.WeatherRequest5Days;
+import ru.geekbrains.lesson1.net.WeatherWebDetails;
+
 public class CitiesPool implements Serializable {
-    private Map<String, ArrayList<Integer>> citiesPool = new HashMap<>();
+    private Map<String, ArrayList<WeatherWebDetails>> citiesPool = new HashMap<>();
 
     private int getWeatherState() {
         int min = 1;
@@ -23,42 +27,25 @@ public class CitiesPool implements Serializable {
         return i;
     }
 
-    private int getTemperature() {
-        int min = -40;
-        int max = 50;
-        int diff = max - min;
-        Random random = new Random();
-        int i = random.nextInt(diff + 1);
-        i += min;
-
-        if (i<0) return ((getWeatherState()*100)+Math.abs(i))*(-1);
-            else
-                return (getWeatherState()*100)+i;
-    }
-
-    private ArrayList<Integer> getTemperatureOfWeek()
+    private ArrayList<WeatherWebDetails> detailsCreate(WeatherRequest5Days request5Days)
     {
-        ArrayList<Integer> temperatureOfWeek = new ArrayList<>();
-        temperatureOfWeek.clear();
-        for (int i = 0 ;i< 7 ;i++) temperatureOfWeek.add(getTemperature());
-        return temperatureOfWeek;
-    }
+        ArrayList<WeatherWebDetails> weatherDetails = new ArrayList<>();
 
-    public CitiesPool(String[] citiesList){
-        for (String s:citiesList) {
-                    citiesPool.put(s,getTemperatureOfWeek());
-        }
-    }
-
-    public int getTemperature(String cityName){
-        Calendar calendar = Calendar.getInstance();
-        int weekday = calendar.get(Calendar.DAY_OF_WEEK);
-        if (!checkCity(cityName))
+        for (ru.geekbrains.lesson1.net.List ls:request5Days.getList())
         {
-            addCity(cityName);
+            WeatherWebDetails weatherWebDetails = new WeatherWebDetails(ls.getMain().getTempCelsius(),
+                    ls.getMain().getPressureR(),
+                    0,  // TODO
+                    getWeatherState(), // TODO
+                    ls.getDt()
+            );
+            weatherDetails.add(weatherWebDetails);
         }
+      return    weatherDetails;
+    }
 
-        return   citiesPool.get(cityName).get(weekday);
+    public CitiesPool(String cityIs ,WeatherRequest5Days request5Days) {
+        addCity(cityIs, request5Days);
     }
 
     public String getCity(int cityIndex){
@@ -67,7 +54,7 @@ public class CitiesPool implements Serializable {
 
     public boolean checkCity(String cityName){
         try {
-            ArrayList<Integer> val = citiesPool.get(cityName);
+            ArrayList<WeatherWebDetails> val = citiesPool.get(cityName);
             return  val!=null;
         }
         catch (NullPointerException e) {
@@ -75,8 +62,8 @@ public class CitiesPool implements Serializable {
         }
     }
 
-    public void addCity(String cityName){
-        citiesPool.put(cityName,getTemperatureOfWeek());
+    public void addCity(String cityIs, WeatherRequest5Days request5Days){
+        citiesPool.put(cityIs, detailsCreate(request5Days));
     }
 
     public String [] getCities(){
@@ -85,30 +72,9 @@ public class CitiesPool implements Serializable {
         return listOfKeys.toArray(new String[listOfKeys.size()]);
     }
 
-    public ArrayList<Integer> getTemperatureOfWeek(String cityName)
+    public ArrayList<WeatherWebDetails> getWeather5DaysDetails(String cityName)
     {
-
         return citiesPool.get(cityName);
-    }
-
-    public int[] getTemperatureOfWeekAsArray(String cityName)
-    {
-        ArrayList<Integer> tempArray = citiesPool.get(cityName);
-
-        if (tempArray == null)
-        {
-            addCity(cityName);
-            tempArray = citiesPool.get(cityName);
-        }
-
-        int[] array = new int[tempArray.size()];
-
-        int i = 0;
-        for(Integer value: tempArray) {
-            array[i++] = value;
-        }
-
-        return array;
     }
 
 }
