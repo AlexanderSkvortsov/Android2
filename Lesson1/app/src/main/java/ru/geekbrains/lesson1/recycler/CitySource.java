@@ -3,7 +3,10 @@ package ru.geekbrains.lesson1.recycler;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.geekbrains.lesson1.util.Parcel;
@@ -23,28 +26,42 @@ public class CitySource implements CityDataSource {
 
         public CitySource init() {
 
-            // строки дней недели
-            String[] descriptions = resources.getStringArray(R.array.week_Name);
+            int detailSize = getArraySize();
 
-            // изображения погоды (солнце, дождь , ветер, итд...)
+                // изображения погоды (солнце, дождь , ветер, итд...)
             int[] pictures = getImageArray();
 
             // наполнение источника данных на 1 неделю
-            for (int i = 0; i < descriptions.length; i++)
-                dataSource.add(new Wed(descriptions[i], pictures[ getWeatherPictureIndex(i)-1], getTemperature(i)));
+            for (int i = 0; i < detailSize; i++) {
+                Date curDate = getDate(i);
+                Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String s = formatter.format(curDate);
+                dataSource.add(new Wed(s, pictures[getWeatherPictureIndex(i) - 1], getTemperature(i)));
+            }
             return this;
         }
 
         // получаем температуру
         private int getTemperature(int num){
             // low part of temperature
-            return parcel.getTemperatureOfWeek()[num] %100;
+            return parcel.getTemperatureOf5Days().get(num).getTemperature();
         }
 
+    // получаем дату и время
+    private Date getDate(int num){
+
+        long dt =  parcel.getTemperatureOf5Days().get(num).getDt();
+        return new java.util.Date((long)dt*1000);
+    }
+
+    // получаем размер
+    private int getArraySize(){
+        return parcel.getTemperatureOf5Days().size();
+    }
        // получаем индекс погоды (солнце, дождь , ветер, итд...)
         private int getWeatherPictureIndex(int num){
             // hight part of temperature
-            return Math.abs(parcel.getTemperatureOfWeek()[num] /100);
+            return parcel.getTemperatureOf5Days().get(num).getIco();
         }
 
         //

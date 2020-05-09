@@ -14,9 +14,9 @@
     <string name="valuePressure">760</string>
     <string name="pressureName">Pressure</string>
     <string-array name="city_names">
-        <item>Moskow</item>
-        <item>Saint-Petersburg</item>
-        <item>Voroneg</item>
+        <item>Moscow</item>
+        <item>Saint Petersburg</item>
+        <item>Voronezh</item>
         <item>Yaroslavl</item>
         <item>Samara</item>
     </string-array>
