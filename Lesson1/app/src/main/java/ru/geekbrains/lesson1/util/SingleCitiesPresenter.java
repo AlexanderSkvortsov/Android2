@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ru.geekbrains.lesson1.R;
+import ru.geekbrains.lesson1.pool.WeatherCityPool;
 
 public final  class SingleCitiesPresenter {
 
@@ -16,8 +17,17 @@ public final  class SingleCitiesPresenter {
 
         private ArrayList<String> listOfCities;
         private boolean isDarkTheme;
+        private WeatherCityPool weatherCityPool;
 
-        // Конструктор (вызывать извне его нельзя, поэтому он приватный)
+    public WeatherCityPool getWeatherCityPool() {
+        return weatherCityPool;
+    }
+
+    public void setWeatherCityPool(WeatherCityPool weatherCityPool) {
+        this.weatherCityPool = weatherCityPool;
+    }
+
+    // Конструктор (вызывать извне его нельзя, поэтому он приватный)
         private SingleCitiesPresenter(){
             String[] temp = App.getContext().getResources().getStringArray(R.array.city_names);
             listOfCities = new ArrayList<String>( Arrays.asList(temp));

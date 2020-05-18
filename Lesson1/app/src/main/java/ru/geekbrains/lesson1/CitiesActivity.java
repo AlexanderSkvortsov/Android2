@@ -36,8 +36,8 @@ import static ru.geekbrains.lesson1.fragment.CityFragment.CITY_PARCEL_DETAILS;
 public class CitiesActivity extends AppCompatActivity implements CitiesConst{
 
     Pattern checkLoginRU ;
-
     ListView cityNames;
+
     TextInputEditText selectedCity;
     Button buttonAction;
     Switch swPressure;
