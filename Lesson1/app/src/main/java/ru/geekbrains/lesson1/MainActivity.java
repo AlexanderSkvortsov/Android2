@@ -6,40 +6,66 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import ru.geekbrains.lesson1.net.WeatherRequest5Days;
 import ru.geekbrains.lesson1.net.WeatherThread;
+import ru.geekbrains.lesson1.pool.WeatherCityPool;
+import ru.geekbrains.lesson1.pool.WeatherListActivity;
 import ru.geekbrains.lesson1.util.CitiesConst;
 import ru.geekbrains.lesson1.util.CitiesPool;
 import ru.geekbrains.lesson1.util.ParcelCitylDetails;
 import ru.geekbrains.lesson1.util.SingleCitiesPresenter;
 
-
-public class MainActivity extends AppCompatActivity implements CitiesConst {
+public class MainActivity extends AppCompatActivity implements CitiesConst , NavigationView.OnNavigationItemSelectedListener{
 
         public ParcelCitylDetails mainParcel;
         private CitiesPool citiesPool = null;
-        private  MenuItem isDarkTheme;
         private boolean isDark;
         private boolean isWind;
         private boolean isPressure;
         private String mainCity;
-        SingleCitiesPresenter singleCitiesPresenter;
-        WeatherThread weatherThread ;
+        WeatherThread weatherThread;
+        private AppBarConfiguration mAppBarConfiguration;
+        private Switch swDarkSetting;
+        private MainActivity mainActivity;
+        private WeatherCityPool weatherCityPool;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            SingleCitiesPresenter singleCitiesPresenter  = SingleCitiesPresenter.getInstance();
+            mainActivity = this;
+
+            SingleCitiesPresenter singleCitiesPresenter = SingleCitiesPresenter.getInstance();
+
 
             InitParcelCity();
 
+            if (weatherCityPool == null )  weatherCityPool = new WeatherCityPool();
+
             getActualWeb(mainCity);
+            if ((weatherThread.getRequestResult() == null) )
+            {
+                mainCity = "Москва";
+                getActualWeb(mainCity);
+            }
 
             // restore or create
             if (savedInstanceState == null) {
@@ -47,12 +73,9 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
             }
             else {
                 citiesPool=(CitiesPool )savedInstanceState.getSerializable("CityPool");
-
             }
 
-
             mainParcel = createParcelCity();
-
 
             if (savedInstanceState == null) {
                 singleCitiesPresenter.setDarkTheme(isDark);
@@ -66,11 +89,31 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
                 setTheme(R.style.AppTheme);
             }
 
-
             setContentView(R.layout.activity_main);
+            initDrawer();
+
         }
 
-        private boolean getActualWeb(String cityIs ){
+    private void initDrawer() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener( this);
+
+        swDarkSetting = (Switch)navigationView.getMenu().findItem(R.id.nav_switch).getActionView().findViewById(R.id.switchTheme);
+        swDarkSetting.setChecked(isDark);
+
+        swDarkSetting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                SingleCitiesPresenter singleCitiesPresenter = SingleCitiesPresenter.getInstance();
+                singleCitiesPresenter.setDarkTheme(isChecked);
+                mainActivity.recreate();
+            }
+        });
+    }
+
+    private boolean getActualWeb(String cityIs ){
             weatherThread = new WeatherThread(cityIs);
             Thread childWeatherThread = new Thread(weatherThread);
             childWeatherThread.start();
@@ -85,12 +128,9 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
                 e.printStackTrace();
                 return false;
             }
-
         }
 
-
     private void InitParcelCity() {
-
             SharedPreferences sharedPref = getSharedPreferences(GEEK_WEATHER, MODE_PRIVATE);
 
             isDark= sharedPref.getBoolean(IS_DARK_THEME, true);
@@ -98,12 +138,12 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
             isPressure= sharedPref.getBoolean(IS_PRESSUE, true);
             mainCity= sharedPref.getString(MAIN_CITY, "Москва");
 
+            Gson gson = new Gson();
+            String json =  sharedPref.getString(CITY_WEATHER_LIST, "");
+            weatherCityPool = gson.fromJson(json, WeatherCityPool.class);
         }
 
     private  ParcelCitylDetails createParcelCity() {
-
-
-
         return new ParcelCitylDetails(mainCity, citiesPool.getWeather5DaysDetails(mainCity), isWind, isPressure,isDark);
     }
 
@@ -113,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
 
             if (weatherThread.getRequestResult() == null) {
                 Toast.makeText(getApplicationContext(), "Нет данных!", Toast.LENGTH_SHORT).show();
-                Log.e(GEEK_WEATHER,"No data wrom web!");
+                Log.e(GEEK_WEATHER,"No data from web!");
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -130,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
         }
     }
 
-
     public void saveParcelCity(){
         SharedPreferences sharedPref = getSharedPreferences(GEEK_WEATHER, MODE_PRIVATE);
         // Настройки сохраняются посредством специального класса editor.
@@ -139,8 +178,13 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
         editor.putBoolean(IS_WIND, isWind);
         editor.putBoolean(IS_PRESSUE, isPressure);
         editor.putString(MAIN_CITY, mainCity);
-
         editor.apply();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(weatherCityPool);
+        editor.putString(CITY_WEATHER_LIST, json);
+        editor.commit();
+
     }
 
     @Override
@@ -150,56 +194,11 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
         saveParcelCity();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        menu.findItem(R.id.darkThemeSettings).setChecked(isDark);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        super.onOptionsItemSelected(item);
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.cityVewSettings) {
-            //Toast.makeText(getApplicationContext(),"item2",Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent();
-            intent.setClass(this, CitiesActivity.class);
-
-            intent.putExtra(IS_WIND, isWind);
-            intent.putExtra(IS_PRESSUE, isPressure);
-            intent.putExtra(MAIN_CITY, mainCity);
-
-            startActivityForResult(intent, RESULT_FROM_SETTINGS);
-            return true;
-        }
-
-            //noinspection SimplifiableIfStatement
-        if (id == R.id.darkThemeSettings) {
-                SingleCitiesPresenter singleCitiesPresenter = SingleCitiesPresenter.getInstance();
-
-                item.setChecked(!item.isChecked());
-                singleCitiesPresenter.setDarkTheme(item.isChecked());
-                this.recreate();
-                return true;
-        }
-
-        return true;
-    }
-
     protected void updateFragment(boolean updateWind, boolean updatePressure, String updateCity){
 
         if ((updateWind != isWind) ||
             (updateCity != mainCity)||
-            (updatePressure != isPressure)
-            )
+            (updatePressure != isPressure))
         {
             mainCity = updateCity;
             isWind = updateWind;
@@ -209,14 +208,10 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
 //                if (getActualWeb(mainCity )){
                     citiesPool.addCity(mainCity,weatherThread.getRequestResult());
                     saveParcelCity();
+                    weatherCityPool.setCityWeather(mainParcel.getCityName(), mainParcel.getTemperatureOf1Day());
                     this.recreate();
-
             }
-
-
-            //CityFragment cityFragment = (CityFragment) getSupportFragmentManager().findFragmentById(R.id.cities);
-            //cityFragment.getActivity().recreate();
-          }
+         }
     }
 
     @Override
@@ -245,8 +240,44 @@ public class MainActivity extends AppCompatActivity implements CitiesConst {
 
     private void showToast(String message)
     {
-        //       Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
         Log.d(GEEK_WEATHER,message);
+    }
+
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_selectCity) {
+                //Toast.makeText(getApplicationContext(),"item2",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(this, CitiesActivity.class);
+
+                intent.putExtra(IS_WIND, isWind);
+                intent.putExtra(IS_PRESSUE, isPressure);
+                intent.putExtra(MAIN_CITY, mainCity);
+
+                startActivityForResult(intent, RESULT_FROM_SETTINGS);
+            }
+
+        if (id == R.id.nav_showCitiesWeather) {
+            Intent intent = new Intent();
+            intent.setClass(this, WeatherListActivity.class);
+
+            SingleCitiesPresenter singleCitiesPresenter = SingleCitiesPresenter.getInstance();
+            singleCitiesPresenter.setWeatherCityPool(weatherCityPool);
+
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+
+        return true;
     }
 
 

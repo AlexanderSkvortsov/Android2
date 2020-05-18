@@ -19,6 +19,7 @@ public interface CitiesConst {
     String IS_WIND = "IsWind";
     String IS_PRESSUE = "IsPressure";
     String MAIN_CITY = "MainCity";
+    String CITY_WEATHER_LIST= "CityWeatherList";
 
     int RESULT_FROM_SETTINGS = 0x5000;
 
