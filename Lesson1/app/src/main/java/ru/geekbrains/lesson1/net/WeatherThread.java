@@ -25,7 +25,7 @@ public class WeatherThread implements Runnable {
     private static final String WEATHER_URL_PREFIX ="https://api.openweathermap.org/data/2.5/forecast?q=";
     private static final String WEATHER_URL_SUFFICS = ",RU&appid=";
 
-    private static final String WEATHER_API_KEY = "36a6ee9abf5b6edad46ef3edc95b5d55";
+    private static final String WEATHER_API_KEY = "36a6ee9abf5b6edad46ef3edc95b5dc5";
     private String cityName;
     private WeatherRequest5Days requestResult;
 

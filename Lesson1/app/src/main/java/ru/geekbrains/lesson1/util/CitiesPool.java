@@ -31,15 +31,28 @@ public class CitiesPool implements Serializable {
     {
         ArrayList<WeatherWebDetails> weatherDetails = new ArrayList<>();
 
-        for (ru.geekbrains.lesson1.net.List ls:request5Days.getList())
+        if (request5Days == null)
         {
-            WeatherWebDetails weatherWebDetails = new WeatherWebDetails(ls.getMain().getTempCelsius(),
-                    ls.getMain().getPressureR(),
-                    0,  // TODO
-                    getWeatherState(), // TODO
-                    ls.getDt()
-            );
-            weatherDetails.add(weatherWebDetails);
+            for (int i =0 ;i< 7;i++) {
+                WeatherWebDetails weatherWebDetails = new WeatherWebDetails(0,
+                        0,
+                        0,
+                        getWeatherState(),
+                        0
+                );
+                weatherDetails.add(weatherWebDetails);
+            }
+        }
+        else {
+            for (ru.geekbrains.lesson1.net.List ls : request5Days.getList()) {
+                WeatherWebDetails weatherWebDetails = new WeatherWebDetails(ls.getMain().getTempCelsius(),
+                        ls.getMain().getPressureR(),
+                        0,  // TODO
+                        getWeatherState(), // TODO
+                        ls.getDt()
+                );
+                weatherDetails.add(weatherWebDetails);
+            }
         }
       return    weatherDetails;
     }

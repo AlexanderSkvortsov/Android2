@@ -8,12 +8,15 @@ public class ParcelCitylDetails extends Parcel {
     private final boolean showWind;
     private final boolean showPressure;
     private final boolean darkTheme;
+    private final boolean noWebData;
 
-    public ParcelCitylDetails(String cityName, ArrayList<WeatherWebDetails> weather5days, boolean showWind, boolean showPressure, boolean darkTheme) {
+
+    public ParcelCitylDetails(String cityName, ArrayList<WeatherWebDetails> weather5days, boolean showWind, boolean showPressure, boolean darkTheme, boolean noWebData) {
         super(cityName, weather5days);
         this.showWind = showWind;
         this.showPressure = showPressure;
         this.darkTheme = darkTheme;
+        this.noWebData=noWebData;
     }
 
     public boolean isDarkTheme() {
@@ -26,5 +29,9 @@ public class ParcelCitylDetails extends Parcel {
 
     public boolean isShowPressure() {
         return showPressure;
+    }
+
+    public boolean isNoWebData() {
+        return noWebData;
     }
 }

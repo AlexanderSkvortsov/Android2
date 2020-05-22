@@ -80,13 +80,6 @@ public class CoatOfWeekTemperatureFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(layout.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-/*
-        // Добавим разделитель карточек
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(
-                this, LinearLayoutManager.VERTICAL);
-        itemDecoration.setDrawable(getDrawable(R.drawable.separator));
-        recyclerView.addItemDecoration(itemDecoration);
-*/
         // Установим анимацию - а чтобы было хорошо заметно, сделаем анимацию долгой
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(500);
