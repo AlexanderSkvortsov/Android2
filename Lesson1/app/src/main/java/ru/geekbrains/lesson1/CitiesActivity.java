@@ -140,9 +140,6 @@ public class CitiesActivity extends AppCompatActivity implements CitiesConst{
     }
 
     private void PullView() {
-        //String[] cityValues = getResources().getStringArray(R.array.city_names);
-
-
         cityNames.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -226,7 +223,6 @@ public class CitiesActivity extends AppCompatActivity implements CitiesConst{
 
     private void showToast(String message)
     {
- //       Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
         Log.d(GEEK_WEATHER,message);
     }
 

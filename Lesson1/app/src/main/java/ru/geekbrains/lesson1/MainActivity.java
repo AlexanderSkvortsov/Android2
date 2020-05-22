@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
 
     private void showToast(String message)
     {
-        // Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
         Log.d(GEEK_WEATHER,message);
     }
 
@@ -249,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
         int id = item.getItemId();
 
         if (id == R.id.nav_selectCity) {
-                //Toast.makeText(getApplicationContext(),"item2",Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent();
                 intent.setClass(this, CitiesActivity.class);
 

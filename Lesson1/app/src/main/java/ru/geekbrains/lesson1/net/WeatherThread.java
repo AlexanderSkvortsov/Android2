@@ -21,9 +21,6 @@ import static ru.geekbrains.lesson1.util.CitiesConst.GEEK_WEATHER;
 
 public class WeatherThread implements Runnable {
     private static final String TAG = "WEATHER";
-   // private static final String WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?lat=55.75&lon=37.62&appid=";
-    //private static final String WEATHER_URL_PREFIX = "https://api.openweathermap.org/data/2.5/weather?q=";
-    //private static final String WEATHER_URL_SUFFICS = ",RU&appid=";
 
     private static final String WEATHER_URL_PREFIX ="https://api.openweathermap.org/data/2.5/forecast?q=";
     private static final String WEATHER_URL_SUFFICS = ",RU&appid=";
@@ -41,7 +38,7 @@ public class WeatherThread implements Runnable {
     }
 
     private String getLines(BufferedReader in) throws IOException {
-//        return in.lines().collect(Collectors.joining("\n"));
+
         // for all API
         String response = new String();
         for (String line; (line = in.readLine()) != null; response += line);

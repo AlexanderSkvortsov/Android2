@@ -10,7 +10,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        SingleCitiesPresenter singleCitiesPresenter = SingleCitiesPresenter.getInstance();
     }
 
     public static Context getContext(){
