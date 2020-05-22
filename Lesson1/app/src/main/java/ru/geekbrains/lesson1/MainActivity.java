@@ -1,5 +1,6 @@
 package ru.geekbrains.lesson1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
         private Switch swDarkSetting;
         private MainActivity mainActivity;
         private WeatherCityPool weatherCityPool;
+        private boolean noDataFromWeb;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -144,28 +148,21 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
         }
 
     private  ParcelCitylDetails createParcelCity() {
-        return new ParcelCitylDetails(mainCity, citiesPool.getWeather5DaysDetails(mainCity), isWind, isPressure,isDark);
+        return new ParcelCitylDetails(mainCity, citiesPool.getWeather5DaysDetails(mainCity), isWind, isPressure,isDark, noDataFromWeb);
     }
 
     private void InitPool() {
 
         if (citiesPool == null) {
 
-            if (weatherThread.getRequestResult() == null) {
-                Toast.makeText(getApplicationContext(), "Нет данных!", Toast.LENGTH_SHORT).show();
-                Log.e(GEEK_WEATHER,"No data from web!");
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                finish();
-            }
-            else
-            {
-                // get the weather from web
-                WeatherRequest5Days weatherRequest5Days =  weatherThread.getRequestResult();
-                citiesPool = new CitiesPool(mainCity, weatherRequest5Days );
+            WeatherRequest5Days weatherRequest5Days =  weatherThread.getRequestResult();
+            citiesPool = new CitiesPool(mainCity, weatherRequest5Days );
+
+            noDataFromWeb = (weatherThread.getRequestResult() == null);
+
+            if (noDataFromWeb) {
+                Toast.makeText(getApplicationContext(), "Нет данных!", Toast.LENGTH_LONG).show();
+                Log.e(GEEK_WEATHER, "No data from web!");
             }
         }
     }
@@ -257,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
                 intent.putExtra(MAIN_CITY, mainCity);
 
                 startActivityForResult(intent, RESULT_FROM_SETTINGS);
-            }
+         }
 
         if (id == R.id.nav_showCitiesWeather) {
             Intent intent = new Intent();

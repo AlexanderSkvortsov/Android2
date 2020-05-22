@@ -51,7 +51,8 @@ public class CitySource implements CityDataSource {
     private Date getDate(int num){
 
         long dt =  parcel.getTemperatureOf5Days().get(num).getDt();
-        return new java.util.Date((long)dt*1000);
+        if (dt!=0) return new java.util.Date((long)dt*1000);
+        else  return new Date();
     }
 
     // получаем размер

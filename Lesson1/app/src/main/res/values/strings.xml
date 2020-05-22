@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lesson2_1</string>
+    <string name="app_name">Lesson2_2</string>
     <string name="txtCityName">Moskow</string>
     <string name="txtCityTemperature">+10</string>
     <string name="txtCityWind">100</string>
@@ -66,5 +66,11 @@
     <string name="search">Search</string>
 
     <string name="swTheme">Dark Theme</string>
+
+    <string name="warning_message">Ошибка получения данных, город </string>
+    <string name="exclamation">Ошибка сервера погоды</string>
+    <string name="press_button">Выберите другой город или проверьте соединение.</string>
+    <string name="button_yes">Да</string>
+    <string name="button_no">нет</string>
 
 </resources>

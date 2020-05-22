@@ -1,5 +1,6 @@
 package ru.geekbrains.lesson1.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -65,7 +67,6 @@ public class CityFragment extends Fragment implements CitiesConst {
         parcelCity = getParcelCity();
         InitView(layout);
         PullView(layout);
-
         return layout;
     }
 
@@ -95,8 +96,6 @@ public class CityFragment extends Fragment implements CitiesConst {
 
     private void fieldsInit(View layout) {
         // Получить посылку из параметра
-
-
         boolean val = parcelCity.isShowPressure();
         newPressure.setVisibility((val) ? View.VISIBLE : View.INVISIBLE);
         newPressureName.setVisibility((val) ? View.VISIBLE : View.INVISIBLE);
@@ -127,7 +126,6 @@ public class CityFragment extends Fragment implements CitiesConst {
                 Uri uri = Uri.parse(url);
                 Intent browser = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(browser);
-
                 snackbarShow(layout,"CITY WIKI");
             }
         });
@@ -143,7 +141,6 @@ public class CityFragment extends Fragment implements CitiesConst {
                     browser.setData(Uri.parse(url));
                     startActivity(browser);
                     snackbarShow(layout,"CITY WEATHER");
-
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -168,19 +165,15 @@ public class CityFragment extends Fragment implements CitiesConst {
                 currentParcel = new Parcel(cityFinal,tempArray);
                 showCoatOfWeekTemperature(currentParcel);
             }
-
             public void onSwipeRight() {
                 getActivity().finish();
             }
-
         });
-
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     // activity создана, можно к ней обращаться. Выполним начальные действия
@@ -214,14 +207,30 @@ public class CityFragment extends Fragment implements CitiesConst {
         super.onSaveInstanceState(outState);
     }
 
-    public int getDummy(){
-
-        return  -1001;
-    }
-
     // Показать температуру. Ecли возможно, то показать рядом со списком,
     // если нет, то открыть вторую activity
     private void showCoatOfWeekTemperature(Parcel parcel) {
+        if (parcelCity.isNoWebData())
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            String message = getResources().getString(R.string.warning_message)+" "+parcelCity.getCityName();
+            builder.setTitle(message)
+                    .setMessage(R.string.press_button)
+                    //.setIcon(R.mipmap.ic_launcher_round)
+                    .setIcon(R.drawable.pic8)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            //                            Toast.makeText(getApplicationContext(), "Кнопка ок", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+            return;
+        }
+
         if (isExistCoatOfArms) {
             // Проверим, что фрагмент с температурой существует в activity
             CoatOfWeekTemperatureFragment detail = (CoatOfWeekTemperatureFragment)
