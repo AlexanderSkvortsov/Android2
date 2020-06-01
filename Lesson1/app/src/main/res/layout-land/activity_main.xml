@@ -15,11 +15,13 @@
     android:layout_height="match_parent">
 
     <!-- Детали по городу  -->
-    <fragment android:name="ru.geekbrains.lesson1.fragment.CityFragment"
+    <fragment
         android:id="@+id/cities"
-        android:layout_weight="1"
+        android:name="ru.geekbrains.lesson1.fragment.CityFragment"
         android:layout_width="0px"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:tag="MainCityFragment" />
 
     <!-- Здесь будет температура за неделю -->
     <FrameLayout

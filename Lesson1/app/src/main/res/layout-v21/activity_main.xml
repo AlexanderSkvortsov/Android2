@@ -19,10 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment android:name="ru.geekbrains.lesson1.fragment.CityFragment"
+        <fragment
             android:id="@+id/cities"
+            android:name="ru.geekbrains.lesson1.fragment.CityFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:tag="MainCityFragment" />
 
     </FrameLayout>
 
