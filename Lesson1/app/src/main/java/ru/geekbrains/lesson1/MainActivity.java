@@ -1,13 +1,20 @@
 package ru.geekbrains.lesson1;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -18,6 +25,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -26,10 +36,24 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import ru.geekbrains.lesson1.fragment.CityFragment;
+import ru.geekbrains.lesson1.fragment.CoatOfWeekTemperatureFragment;
 import ru.geekbrains.lesson1.net.WeatherRequest5Days;
 import ru.geekbrains.lesson1.net.WeatherThread;
 import ru.geekbrains.lesson1.pool.WeatherCityPool;
 import ru.geekbrains.lesson1.pool.WeatherListActivity;
+import ru.geekbrains.lesson1.retrofit2.IOpenWeather;
+import ru.geekbrains.lesson1.util.App;
 import ru.geekbrains.lesson1.util.CitiesConst;
 import ru.geekbrains.lesson1.util.CitiesPool;
 import ru.geekbrains.lesson1.util.ParcelCitylDetails;
@@ -37,21 +61,27 @@ import ru.geekbrains.lesson1.util.SingleCitiesPresenter;
 
 public class MainActivity extends AppCompatActivity implements CitiesConst , NavigationView.OnNavigationItemSelectedListener{
 
-        public ParcelCitylDetails mainParcel;
+        public ParcelCitylDetails mainParcel = null;
         private CitiesPool citiesPool = null;
         private boolean isDark;
         private boolean isWind;
         private boolean isPressure;
         private String mainCity;
-        WeatherThread weatherThread;
+        //WeatherThread weatherThread;
         private AppBarConfiguration mAppBarConfiguration;
         private Switch swDarkSetting;
         private MainActivity mainActivity;
         private WeatherCityPool weatherCityPool;
         private boolean noDataFromWeb;
 
+        // retrofit variable
+        private SharedPreferences sharedPref;
+        private IOpenWeather openWeather;
+        private String privateApiKey;
+        WeatherRequest5Days weatherRequest5Days = null;
+        private ProgressDialog mProgressDialog;
 
-        @Override
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
@@ -59,17 +89,14 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
 
             SingleCitiesPresenter singleCitiesPresenter = SingleCitiesPresenter.getInstance();
 
+            initRetrofit();
+            initPreferences();
 
             InitParcelCity();
 
             if (weatherCityPool == null )  weatherCityPool = new WeatherCityPool();
 
-            getActualWeb(mainCity);
-            if ((weatherThread.getRequestResult() == null) )
-            {
-                mainCity = "Москва";
-                getActualWeb(mainCity);
-            }
+            requestRetrofit(mainCity,privateApiKey);
 
             // restore or create
             if (savedInstanceState == null) {
@@ -117,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
         });
     }
 
+/*
     private boolean getActualWeb(String cityIs ){
             weatherThread = new WeatherThread(cityIs);
             Thread childWeatherThread = new Thread(weatherThread);
@@ -133,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
                 return false;
             }
         }
+*/
 
     private void InitParcelCity() {
             SharedPreferences sharedPref = getSharedPreferences(GEEK_WEATHER, MODE_PRIVATE);
@@ -155,15 +184,16 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
 
         if (citiesPool == null) {
 
-            WeatherRequest5Days weatherRequest5Days =  weatherThread.getRequestResult();
             citiesPool = new CitiesPool(mainCity, weatherRequest5Days );
 
-            noDataFromWeb = (weatherThread.getRequestResult() == null);
-
+            noDataFromWeb = (weatherRequest5Days == null);
+/*
             if (noDataFromWeb) {
                 Toast.makeText(getApplicationContext(), "Нет данных!", Toast.LENGTH_LONG).show();
                 Log.e(GEEK_WEATHER, "No data from web!");
             }
+
+ */
         }
     }
 
@@ -203,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
 
             if (!citiesPool.checkCity(mainCity )){
 //                if (getActualWeb(mainCity )){
-                    citiesPool.addCity(mainCity,weatherThread.getRequestResult());
+                    citiesPool.addCity(mainCity,weatherRequest5Days);
                     saveParcelCity();
                     weatherCityPool.setCityWeather(mainParcel.getCityName(), mainParcel.getTemperatureOf1Day());
                     this.recreate();
@@ -233,11 +263,12 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
         //+ Также меняем текущую позицию на Parcel
         outState.putSerializable("CityPool", citiesPool);
         super.onSaveInstanceState(outState);
+        savePreferences();
     }
 
     private void showToast(String message)
     {
-        Log.d(GEEK_WEATHER,message);
+        Log.e(GEEK_WEATHER,message);
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -276,5 +307,86 @@ public class MainActivity extends AppCompatActivity implements CitiesConst , Nav
         return true;
     }
 
+    // *************** retrofit **********************
+    private void initRetrofit() {
+        Retrofit retrofit = App.getRetrofitInstance();
+        openWeather = retrofit.create(IOpenWeather.class);
+    }
+
+    private void initPreferences() {
+        sharedPref = getPreferences(MODE_PRIVATE);
+        loadPreferences();                   // Загружаем настройки
+    }
+
+    private void savePreferences() {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("apiKey", privateApiKey);
+        editor.apply();
+    }
+
+    // Загружаем настройки
+    private void loadPreferences() {
+        privateApiKey = sharedPref.getString("apiKey", "36a6ee9abf5b6edad46ef3edc95b5dc0");
+    }
+
+    private void requestRetrofit(String city, String keyApi) {
+
+        mProgressDialog = new ProgressDialog(this,R.style.MyTheme);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        mProgressDialog.show();
+
+        openWeather.loadWeather(city+",RU",  keyApi)
+                .enqueue(new Callback<WeatherRequest5Days>() {
+                    @Override
+                    public void onResponse(Call<WeatherRequest5Days> call, Response<WeatherRequest5Days> response) {
+
+                        mProgressDialog.dismiss();
+                        // if successfully
+                        if (response.body() != null && response.isSuccessful()) {
+                            noDataFromWeb=false;
+                            weatherRequest5Days = response.body();
+                            citiesPool = new CitiesPool(mainCity, weatherRequest5Days );
+                            mainParcel = createParcelCity();
+                            weatherCityPool.setCityWeather(mainParcel.getCityName(), mainParcel.getTemperatureOf1Day());
+
+                            Fragment frg = null;
+                            frg = getSupportFragmentManager().findFragmentByTag("MainCityFragment");
+
+                            if (frg != null)
+                                ((CityFragment)frg ).updateDataFromParcel();
+
+                            /* NOT WORKING !!!, lost more than 4 hovers for understanding why.
+                            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.detach(frg);
+                            ft.attach(frg);
+                            ft.commit();
+                            */
+
+                        }
+
+                        // if bad result
+                        if (!response.isSuccessful() && response.errorBody() != null){
+                            try {
+                                JSONObject jsonError = new JSONObject(response.errorBody().string());
+                                String error = jsonError.getString("message");
+                                showToast(error);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    // totally fail
+                    public void onFailure(Call<WeatherRequest5Days> call, Throwable t) {
+                        showToast("Internet Error!");
+                        mProgressDialog.dismiss();
+
+                    }
+                });
+    }
 
 }

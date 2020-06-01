@@ -58,6 +58,7 @@ public class CityFragment extends Fragment implements CitiesConst {
     private FloatingActionButton cityWeather;
     private ParcelCitylDetails parcelCity;
     private ImageView backGround;
+    private  View fragmentView;
 
      // При создании фрагмента укажем его макет
     @Override
@@ -67,7 +68,15 @@ public class CityFragment extends Fragment implements CitiesConst {
         parcelCity = getParcelCity();
         InitView(layout);
         PullView(layout);
+
+        fragmentView = layout;
         return layout;
+    }
+
+    public void updateDataFromParcel()
+    {
+        parcelCity = getParcelCity();
+        fieldsInit(fragmentView);
     }
 
     private void InitView(View layout)
@@ -147,13 +156,14 @@ public class CityFragment extends Fragment implements CitiesConst {
             }
         });
 
-        final String cityFinal = parcelCity.getCityName();
-        final ArrayList<WeatherWebDetails> tempArray = parcelCity.getTemperatureOf5Days();
 
         newCityName .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //+ Теперь опираемся на Parcel, а не на текущую позицию
+                final String cityFinal = parcelCity.getCityName();
+                final ArrayList<WeatherWebDetails> tempArray = parcelCity.getTemperatureOf5Days();
+
                 currentParcel = new Parcel(cityFinal,tempArray);
                 showCoatOfWeekTemperature(currentParcel);
             }
@@ -162,6 +172,9 @@ public class CityFragment extends Fragment implements CitiesConst {
         backGround.setOnTouchListener(new OnSwipeTouchListener(getActivity().getApplicationContext()) {
 
             public void onSwipeLeft() {
+                final String cityFinal = parcelCity.getCityName();
+                final ArrayList<WeatherWebDetails> tempArray = parcelCity.getTemperatureOf5Days();
+
                 currentParcel = new Parcel(cityFinal,tempArray);
                 showCoatOfWeekTemperature(currentParcel);
             }
@@ -247,6 +260,7 @@ public class CityFragment extends Fragment implements CitiesConst {
                 ft.replace(R.id.coat_of_week_temperature, detail);  // замена фрагмента
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
+
             }
         } else {
             // Если нельзя вывести  рядом, откроем вторую activity
