@@ -37,7 +37,7 @@ public class CitiesPool implements Serializable {
                 WeatherWebDetails weatherWebDetails = new WeatherWebDetails(0,
                         0,
                         0,
-                        getWeatherState(),
+                         getWeatherState(),
                         0
                 );
                 weatherDetails.add(weatherWebDetails);
